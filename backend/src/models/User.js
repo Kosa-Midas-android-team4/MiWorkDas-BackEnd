@@ -20,10 +20,12 @@ class User {
         try {
             const memberCode = await crypto.chiper(this.body.memberCode); // memberCode
             const response = await userStorage.getUserInfo(memberCode);
+            const userTimeInfo = await userStorage.getUserTime(memberCode);
 
             // db 반환 값이 없다면 유저가 없으므로 code: 0 반환
             if(!response) return { success: false, code: 0, user: null };
 
+            response.isWorking = userTimeInfo.isWorking;
             // 어드민일 경우 code: 1, 일반 사원일 경우 code: 2 반환
             if(response.memberIsAdmin) return { success: true, code: 1, user: response};
             return {success: true, code: 2, user: response};
@@ -66,7 +68,7 @@ class User {
             memberTimeInfo.memberWorkTime = JSON.stringify(memberTimeInfo.memberWorkTime);
 
             const response = await userStorage.saveEndWork(memberCode, memberTimeInfo); // success: true
-            response.memberWeekHour =  memberTimeInfo.memberWeekHour;
+            response.memberWeekHour = JSON.parse(memberTimeInfo.memberWeekHour);
             response.memberWorkTime = JSON.parse(memberTimeInfo.memberWorkTime);
             return response;
         } catch(e) {

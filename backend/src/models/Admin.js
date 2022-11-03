@@ -6,10 +6,9 @@ class Admin {
 
     static async getUserAllInfo(memberCode) {
         try {
+            memberCode = await crypto.chiper(memberCode);
             const userAllInfo = await adminStorage.getUserInfo("memberCode", memberCode);
             const userTimeInfo = await adminStorage.getUserTime("memberCode", memberCode);
-
-            const idx = JSON.parse(userTimeInfo.memberWorkDate).indexOf(new Date().toISOString().split('T')[0])
 
             userAllInfo.memberWorkDate = userTimeInfo.memberWorkDate;
             userAllInfo.memberWeekHour = userTimeInfo.memberWeekHour;
@@ -17,6 +16,7 @@ class Admin {
 
             return {success: true, user: userAllInfo};
         } catch(e) {
+            console.log(e);
             return { success: false }
         }
     }
@@ -30,8 +30,9 @@ class Admin {
         for(let i = 0; i < userList.length; i++) {
             const data = await adminStorage.getUserTime("memberCode", userList[i].memberCode);
             userList[i].isWorking = data.isWorking;
-            userList[i].memberCode = crypto.dechiper(userList[i].memberCode);
+            userList[i].memberCode = await crypto.dechiper(userList[i].memberCode);
         }
+
             
         return {success: true, userList};
       } catch(e) {

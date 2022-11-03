@@ -24,7 +24,7 @@ class User {
 
     async startWork() {
         try {
-            const memberCode = this.body; // memberCode
+            const memberCode = this.body.memberCode; // memberCode
             const response = await userStorage.saveStartWork(memberCode);
             return response;
         } catch(e) {
@@ -34,12 +34,31 @@ class User {
 
     async endWork() {
         try {
-            const memberCode = this.body; // memberCode
-            const startTime = await userStorage.getStartTime(memberCode);
-            
-            const response = await userStorage.saveEndWork(memberCode, startTime);
+            const memberCode = this.body.memberCode; // memberCode
+            const memberTimeInfo = await userStorage.getUserTime(memberCode);
+            if(memberTimeInfo.memberWorkDate === null) memberTimeInfo.memberWorkDate = '[]';
+            if(memberTimeInfo.memberWorkTime === null) memberTimeInfo.memberWorkTime = '[]';
+
+
+            memberTimeInfo.memberWorkDate = JSON.parse(memberTimeInfo.memberWorkDate);
+            memberTimeInfo.memberWorkTime = JSON.parse(memberTimeInfo.memberWorkTime);
+
+            // 첫 근무 o
+            const idx = memberTimeInfo.memberWorkDate.indexOf(new Date().toISOString().split('T')[0]);
+            if(idx === -1) {
+                memberTimeInfo.memberWorkDate.push(new Date().toISOString().split('T')[0]);
+                memberTimeInfo.memberWorkTime.push((new Date().getTime() - new Date(memberTimeInfo.memberStartWork).getTime()) / 1000);
+            } else { // 첫 근무 x
+                memberTimeInfo.memberWorkTime[idx] += (new Date().getTime() - new Date(memberTimeInfo.memberStartWork).getTime()) / 1000;
+            }
+
+            memberTimeInfo.memberWorkDate = JSON.stringify(memberTimeInfo.memberWorkDate);
+            memberTimeInfo.memberWorkTime = JSON.stringify(memberTimeInfo.memberWorkTime);
+
+            const response = await userStorage.saveEndWork(memberCode, memberTimeInfo);
             return response;
         } catch(e) {
+            console.log(e);
             return { success: false };
         }
     }

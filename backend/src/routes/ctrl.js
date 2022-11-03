@@ -9,14 +9,14 @@ const process = {
         const response = await user.login();
         return res.json(response);
     },
-    startWork: (req, res) => {
+    startWork: async (req, res) => {
         const user = new User(req.body);
-        const response = user.startWork();
+        const response = await user.startWork();
         return res.json(response);
     },
-    endWork: (req, res) => {
+    endWork: async (req, res) => {
         const user = new User(req.body);
-        const response = user.endWork();
+        const response = await user.endWork();
         return res.json(response);
     }
 }

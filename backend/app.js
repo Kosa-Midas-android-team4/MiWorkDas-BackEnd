@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded( {extended : true } ));
 
 app.use('/api', apiRoute);
 
+
 const db = require('./src/config/db');
 const rule = "0 1 0 * * 7"; // 일요일 0시 1분 마다 실행
 schedule.scheduleJob(rule, () => {

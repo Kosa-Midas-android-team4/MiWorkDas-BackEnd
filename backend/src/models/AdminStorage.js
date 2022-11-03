@@ -47,9 +47,9 @@ class AdminStorage {
 
     static updateUser(client) {
         return new Promise((resolve, reject) => {
-            const query = "";
+            const query = "UPDATE users SET memberName=?, memberDepart=?, memberRank=?, memberPhone=? WHERE memberCode=?;";
             db.query(query,
-                [],
+                [client.memberName, client.memberDepart, client.memberRank, client.memberPhone, client.memberCode],
                 (err) => {
                     if(err) reject(err);
                     resolve({success: true});

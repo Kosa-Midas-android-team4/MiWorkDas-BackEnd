@@ -6,10 +6,21 @@ class User {
         this.body = body;
     }
 
+    async getUserInfo() {
+        try {
+            const memberCode = this.body.memberCode;
+            const response = await userStorage.getUserInfo(memberCode);
+            return {success: true, user: response};
+        } catch(e) {
+            return {success: false};
+        }
+    }
+
     async login() {
         try {
             const memberCode = await crypto.chiper(this.body.memberCode); // memberCode
             const response = await userStorage.getUserInfo(memberCode);
+
             // db 반환 값이 없다면 유저가 없으므로 code: 0 반환
             if(!response) return { success: false, code: 0, user: null };
 
@@ -38,7 +49,6 @@ class User {
             if(memberTimeInfo.memberWorkDate === null) memberTimeInfo.memberWorkDate = '[]';
             if(memberTimeInfo.memberWorkTime === null) memberTimeInfo.memberWorkTime = '[]';
 
-
             memberTimeInfo.memberWorkDate = JSON.parse(memberTimeInfo.memberWorkDate);
             memberTimeInfo.memberWorkTime = JSON.parse(memberTimeInfo.memberWorkTime);
 
@@ -51,12 +61,16 @@ class User {
                 memberTimeInfo.memberWorkTime[idx] += (new Date().getTime() - new Date(memberTimeInfo.memberStartWork).getTime()) / 1000;
             }
 
+            memberTimeInfo.memberWeekHour += (new Date().getTime() - new Date(memberTimeInfo.memberStartWork).getTime()) / 1000;
             memberTimeInfo.memberWorkDate = JSON.stringify(memberTimeInfo.memberWorkDate);
             memberTimeInfo.memberWorkTime = JSON.stringify(memberTimeInfo.memberWorkTime);
 
             const response = await userStorage.saveEndWork(memberCode, memberTimeInfo); // success: true
+            response.memberWeekHour =  memberTimeInfo.memberWeekHour;
+            response.memberWorkTime = JSON.parse(memberTimeInfo.memberWorkTime);
             return response;
         } catch(e) {
+            console.log(e);
             return { success: false };
         }
     }

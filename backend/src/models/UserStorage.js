@@ -25,8 +25,8 @@ class UserStorage {
     // 근무 날짜, 시간, 현재 근무 여부, 시작 근무 시간 초기화.
     static saveEndWork(memberCode, data) {
         return new Promise((resolve, reject) => {
-            const query = "UPDATE time SET memberWorkDate=?, memberWorkTime=?, memberStartWork=null, isWorking=false WHERE memberCode = ?;";
-            db.query(query, [data.memberWorkDate, data.memberWorkTime, memberCode], (err) => {
+            const query = "UPDATE time SET memberWorkDate=?, memberWorkTime=?, memberWeekHour=? , memberStartWork=null, isWorking=false WHERE memberCode = ?;";
+            db.query(query, [data.memberWorkDate, data.memberWorkTime, data.memberWeekHour , memberCode], (err) => {
                 if(err) reject(err);
                 resolve({success: true});
             })

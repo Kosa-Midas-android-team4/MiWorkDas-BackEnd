@@ -29,6 +29,10 @@ const adminProcess = {
     userRegister: async (req, res) => {
         const response = await admin.userRegister(req.body);
         return res.json(response);
+    },
+    getUserAllInfo: async(req, res) => {
+        const response = await admin.getUserAllInfo(req.body.memberCode);
+        return res.json(response);
     }
 
 }

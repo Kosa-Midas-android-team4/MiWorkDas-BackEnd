@@ -4,6 +4,23 @@ const crypto = require('./Crypto');
 
 class Admin {
 
+    static async getUserAllInfo(memberCode) {
+        try {
+            const userAllInfo = await adminStorage.getUserInfo("memberCode", memberCode);
+            const userTimeInfo = await adminStorage.getUserTime("memberCode", memberCode);
+
+            const idx = JSON.parse(userTimeInfo.memberWorkDate).indexOf(new Date().toISOString().split('T')[0])
+
+            userAllInfo.memberWorkDate = userTimeInfo.memberWorkDate;
+            userAllInfo.memberWeekHour = userTimeInfo.memberWeekHour;
+            userAllInfo.isWorking = userTimeInfo.isWorking;
+
+            return {success: true, user: userAllInfo};
+        } catch(e) {
+            return { success: false }
+        }
+    }
+
     // 관리자가 모든 사원 조회
     static async inquireUser() {
       try {

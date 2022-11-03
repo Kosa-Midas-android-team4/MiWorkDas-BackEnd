@@ -10,11 +10,13 @@ router.post('/login', ctrl.userProcess.login);
 router.post('/saveStartWork', ctrl.userProcess.startWork);
 router.post('/saveEndWork', ctrl.userProcess.endWork);
 
-// 관리자가 사원 조회
+// 사원 조회
 router.post('/inquireUser', ctrl.adminProcess.inquireUser);
-// 관리자가 사원 등록
+// 사원 등록
 router.post('/registeUser', ctrl.adminProcess.userRegister);
 // 회원 상세 정보 가져오기
 router.post('/getUserAllInfo', ctrl.adminProcess.getUserAllInfo);
+// 사원 정보 수정
+router.post('/updateUser', ctrl.adminProcess.updateUser);
 
 module.exports = router;

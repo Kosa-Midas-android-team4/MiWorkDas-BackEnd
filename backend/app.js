@@ -16,10 +16,14 @@ app.use(bodyParser.urlencoded( {extended : true } ));
 
 app.use('/api', apiRoute);
 
+const db = require('./src/config/db');
 const rule = "0 1 0 * * 7"; // 일요일 0시 1분 마다 실행
 schedule.scheduleJob(rule, () => {
-    // 초기화 db 실행
-    // const query = "UPDATE time set memberWeekHour=0;";
+    const query = "UPDATE time set memberWeekHour=0;";
+    db.query(query, (err) => {
+        if(err) console.error(err);
+        console.log('success');
+    })
 })
 
 

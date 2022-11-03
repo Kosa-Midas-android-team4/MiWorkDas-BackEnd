@@ -2,13 +2,10 @@ const userStorage = require('./UserStorage');
 const crypto = require('./Crypto');
 
 class User {
-    constructor(body) {
-        this.body = body;
-    }
 
-    async getUserInfo() {
+    static async getUserInfo(data) {
         try {
-            const memberCode = this.body.memberCode;
+            const memberCode = data.memberCode;
             const response = await userStorage.getUserInfo(memberCode);
             return {success: true, user: response};
         } catch(e) {
@@ -16,9 +13,9 @@ class User {
         }
     }
 
-    async login() {
+    static async login(data) {
         try {
-            const memberCode = await crypto.chiper(this.body.memberCode); // memberCode
+            const memberCode = await crypto.chiper(data.memberCode); // memberCode
             const response = await userStorage.getUserInfo(memberCode);
             const userTimeInfo = await userStorage.getUserTime(memberCode);
 
@@ -30,13 +27,14 @@ class User {
             if(response.memberIsAdmin) return { success: true, code: 1, user: response};
             return {success: true, code: 2, user: response};
         } catch(e) {
+            console.log(e)
             return { success: false, code: -1, user: null };
         }
     }
 
-    async startWork() {
+    static async startWork(data) {
         try {
-            const memberCode = this.body.memberCode; // memberCode
+            const memberCode = data.memberCode; // memberCode
             const response = await userStorage.saveStartWork(memberCode); // success: true
             return response;
         } catch(e) {
@@ -44,9 +42,9 @@ class User {
         }
     }
 
-    async endWork() {
+    static async endWork(data) {
         try {
-            const memberCode = this.body.memberCode; // memberCode
+            const memberCode = data.memberCode; // memberCode
             const memberTimeInfo = await userStorage.getUserTime(memberCode);
             if(memberTimeInfo.memberWorkDate === null) memberTimeInfo.memberWorkDate = '[]';
             if(memberTimeInfo.memberWorkTime === null) memberTimeInfo.memberWorkTime = '[]';
@@ -68,8 +66,9 @@ class User {
             memberTimeInfo.memberWorkTime = JSON.stringify(memberTimeInfo.memberWorkTime);
 
             const response = await userStorage.saveEndWork(memberCode, memberTimeInfo); // success: true
-            response.memberWeekHour = JSON.parse(memberTimeInfo.memberWeekHour);
-            response.memberWorkTime = JSON.parse(memberTimeInfo.memberWorkTime);
+
+            response.memberWeekHour = memberTimeInfo.memberWeekHour;
+            response.memberWorkTime = JSON.parse(memberTimeInfo.memberWorkTime);    
             return response;
         } catch(e) {
             console.log(e);

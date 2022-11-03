@@ -10,7 +10,6 @@ class Admin {
             const userAllInfo = await adminStorage.getUserInfo("memberCode", memberCode);
             const userTimeInfo = await adminStorage.getUserTime("memberCode", memberCode);
 
-            userAllInfo.memberWorkDate = userTimeInfo.memberWorkDate;
             userAllInfo.memberWeekHour = userTimeInfo.memberWeekHour;
             userAllInfo.isWorking = userTimeInfo.isWorking;
 
@@ -65,9 +64,12 @@ class Admin {
             response.memberCode = await crypto.dechiper(memberCode);
             return response // success, memberCode
         } catch(e) {
-            console.log(e);
             return {success: false, already: false};
         }
+    }
+
+    static async userUpdater(client) {
+        
     }
 }
 

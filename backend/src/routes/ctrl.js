@@ -1,22 +1,19 @@
 
-const User = require('../models/User');
+const user = require('../models/User');
 const admin = require('../models/Admin');
 
 
 const userProcess = {
     login: async (req, res) => {
-        const user = new User(req.body);
-        const response = await user.login();
+        const response = await user.login(req.body);
         return res.json(response);
     },
     startWork: async (req, res) => {
-        const user = new User(req.body);
-        const response = await user.startWork();
+        const response = await user.startWork(req.body);
         return res.json(response);
     },
     endWork: async (req, res) => {
-        const user = new User(req.body);
-        const response = await user.endWork();
+        const response = await user.endWork(req.body);
         return res.json(response);
     }
 }
@@ -32,6 +29,10 @@ const adminProcess = {
     },
     getUserAllInfo: async(req, res) => {
         const response = await admin.getUserAllInfo(req.body.memberCode);
+        return res.json(response);
+    },
+    updateUser: async(req, res) => {
+        const response = await admin.userUpdater(req.body);
         return res.json(response);
     }
 

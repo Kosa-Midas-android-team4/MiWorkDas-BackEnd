@@ -17,7 +17,7 @@ class User {
             if(response.memberIsAdmin) return { success: true, code: 1, user: response};
             return {success: true, code: 2, user: response};
         } catch(e) {
-            return { success: false, code: -1 };
+            return { success: false, code: -1, user: null };
         }
     }
 

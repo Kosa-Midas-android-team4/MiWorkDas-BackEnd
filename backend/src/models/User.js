@@ -1,7 +1,6 @@
 const userStorage = require('./UserStorage');
 const crypto = require('./Crypto');
 
-
 class User {
     constructor(body) {
         this.body = body;
@@ -9,7 +8,7 @@ class User {
 
     async login() {
         try {
-            const memberCode = this.body.memberCode; // memberCode
+            const memberCode = await crypto.chiper(this.body.memberCode); // memberCode
             const response = await userStorage.getUserInfo(memberCode);
             // db 반환 값이 없다면 유저가 없으므로 code: 0 반환
             if(!response) return { success: false, code: 0 };
@@ -25,7 +24,7 @@ class User {
     async startWork() {
         try {
             const memberCode = this.body.memberCode; // memberCode
-            const response = await userStorage.saveStartWork(memberCode);
+            const response = await userStorage.saveStartWork(memberCode); // success: true
             return response;
         } catch(e) {
             return { success: false };
@@ -55,10 +54,9 @@ class User {
             memberTimeInfo.memberWorkDate = JSON.stringify(memberTimeInfo.memberWorkDate);
             memberTimeInfo.memberWorkTime = JSON.stringify(memberTimeInfo.memberWorkTime);
 
-            const response = await userStorage.saveEndWork(memberCode, memberTimeInfo);
+            const response = await userStorage.saveEndWork(memberCode, memberTimeInfo); // success: true
             return response;
         } catch(e) {
-            console.log(e);
             return { success: false };
         }
     }

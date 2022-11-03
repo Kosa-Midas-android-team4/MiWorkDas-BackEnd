@@ -1,10 +1,10 @@
 
 const User = require('../models/User');
+const admin = require('../models/Admin');
 
 
-const process = {
+const userProcess = {
     login: async (req, res) => {
-        console.log(req.body);
         const user = new User(req.body);
         const response = await user.login();
         return res.json(response);
@@ -21,7 +21,20 @@ const process = {
     }
 }
 
+const adminProcess = {
+    inquireUser: async (req, res) => {
+        const response = await admin.inquireUser();
+        return res.json(response);
+    },
+    userRegister: async (req, res) => {
+        const response = await admin.userRegister(req.body);
+        return res.json(response);
+    }
+
+}
+
 
 module.exports = {
-    process
+    userProcess,
+    adminProcess
 }
